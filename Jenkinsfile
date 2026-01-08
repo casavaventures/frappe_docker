@@ -72,7 +72,8 @@ pipeline {
 
         stage('Login to ECR') {
             steps {
-                // --- OPTION 1: Interactive Input (Active) ---
+                // --- OPTION 1: Interactive Input (Commented Out) ---
+                /*
                 script {
                     echo "Requesting AWS Credentials via Jenkins UI..."
                     
@@ -94,19 +95,15 @@ pipeline {
                         """
                     }
                 }
+                */
 
-                // --- OPTION 2: Stored Credentials (Commented Out) ---
-                // To use this: 
-                // 1. Setup 'aws-ecr-credentials' in Jenkins > Credentials
-                // 2. Uncomment the block below and comment out Option 1
-                /*
+                // --- OPTION 2: Stored Credentials (Active) ---
                 echo "Logging into AWS ECR..."
                 withCredentials([usernamePassword(credentialsId: 'aws-ecr-credentials', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
                     sh """
                         aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${ECR_REGISTRY}
                     """
                 }
-                */
             }
         }
 

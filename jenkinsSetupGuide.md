@@ -75,27 +75,10 @@ Jenkins needs authorization to pull from your private GitHub repos and push to A
 
 ### AWS Credentials
 
-You have two options for handling AWS credentials. **Option 1 (Interactive)** is enabled by default.
+You have two options for handling AWS credentials. **Option 1 (Stored Credentials)** is enabled by default for automation.
 
-#### Option 1: Interactive Input (Default) - Supports SSO/Temporary Creds
-**No setup required here.** The pipeline will popup a dialog during the build asking for credentials.
-
-**If you only have an IAM Username and Password:**
-Jenkins cannot use your password directly. You must generate Access Keys (which are like a username/password for tools).
-
-1.  **Login to AWS Console**: Use your Browser to login (as shown in your screenshot).
-2.  **Go to Security Credentials**:
-    - **Click this link**: [https://console.aws.amazon.com/iam/home?#/security_credentials](https://console.aws.amazon.com/iam/home?#/security_credentials)
-    - (Or manually: Click your username in the top-right corner > **Security credentials**).
-    - Scroll down to **Access keys**.
-    - Click **Create access key**.
-    - Select **Command Line Interface (CLI)**.
-3.  **Copy the Keys**:
-    - Copy the **Access key** and **Secret access key**.
-4.  **Paste into Jenkins**: Go back to the Jenkins popup and paste them there.
-
-#### Option 2: Stored Credentials (Automated) - Permanent Keys Only
-If you prefer fully automated builds (no manual input), follow these steps:
+#### Option 1: Stored Credentials (Automated) - Default
+Use this for fully automated builds (no manual input).
 1.  Go to **Dashboard > Manage Jenkins > Credentials > System > Global credentials (unrestricted)**.
 2.  Click **+ Add Credentials**.
 3.  **Kind**: Username with password.
@@ -103,7 +86,13 @@ If you prefer fully automated builds (no manual input), follow these steps:
 5.  **Password**: `AWS_SECRET_ACCESS_KEY` (Your AWS Secret Key).
 6.  **ID**: `aws-ecr-credentials` (**Crucial**: Must match this exact ID).
 7.  Click **Create**.
-*Note*: You will need to edit the `Jenkinsfile` to uncomment Option 2 and comment out Option 1.
+**Need Keys?** [Generate here](https://console.aws.amazon.com/iam/home?#/security_credentials).
+
+#### Option 2: Interactive Input (Manual)
+If you prefer NOT to store credentials and enter them manually for every build:
+1.  Edit `Jenkinsfile`.
+2.  Comment out the "Option 2" block and uncomment the "Option 1" block.
+3.  The pipeline will then pause and ask for credentials during the build.
 
 ### GitHub Token (for Private Repos)
 1.  Click **+ Add Credentials** again.
@@ -150,14 +139,7 @@ To keep your `Jenkinsfile` generic and secure, we will set the project-specific 
 1.  **Initialize**: Sets version.
 2.  **Prepare**: Prepares apps.
 3.  **Build**: Builds Docker image.
-4.  **Login Request**:
-    - **If using Interactive Input (Default)**: The build will **PAUSE**.
-        - **Important**: Go to the **Build Dashboard** (click `#1` or the build number in breadcrumbs).
-        - Look for the paused stage "Login to ECR".
-        - **Action**: You must click the text/link that says **"Input requested"** inside the stage card (bottom half of the screen).
-        - A popup will appear. Enter your AWS Access Key, Secret Key, and Session Token.
-        - Click **Login**.
-    - **If using Stored Credentials**: The build will automatically authenticate using the stored `aws-ecr-credentials` and proceed.
+4.  **Login**: Authenticates with AWS ECR using stored credentials automatically.
 5.  **Push**: Pushes to ECR utilizing the credentials.
 6.  **Cleanup**: Removes local images.
 
