@@ -37,9 +37,15 @@ pipeline {
                             // We use a safe placeholder in apps.json like: https://<GITHUB_TOKEN>@github.com/org/repo
                             appsJsonContent = appsJsonContent.replace('<GITHUB_TOKEN>', env.GITHUB_TOKEN)
                             
-                            // Encode to Base64
-                            def appsJsonBase64 = appsJsonContent.bytes.encodeBase64().toString()
+                            // Write to temp file to use shell base64 (avoids Jenkins Script Security issues)
+                            writeFile file: 'apps_temp.json', text: appsJsonContent
+                            
+                            // Encode to Base64 using shell command
+                            def appsJsonBase64 = sh(script: "base64 -w 0 apps_temp.json", returnStdout: true).trim()
                             env.APPS_JSON_BASE64 = appsJsonBase64
+                            
+                            // Clean up temp file
+                            sh "rm apps_temp.json"
                         }
                     } else {
                         error "apps.json file not found!"
