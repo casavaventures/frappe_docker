@@ -92,7 +92,20 @@ Jenkins needs authorization to pull from your private GitHub repos and push to A
 5.  **ID**: `github-access-token` (**Crucial**: Must match this exact ID)
 6.  Click **Create**.
 
-## 6. Create Pipeline Job
+## 6. Configure Global Variables
+
+To keep your `Jenkinsfile` generic and secure, we will set the project-specific values as global environment variables.
+
+1.  Go to **Dashboard > Manage Jenkins > System**.
+2.  Scroll down to **Global properties**.
+3.  Check **Environment variables**.
+4.  Click **Add** for each of the following:
+    - **Name**: `AWS_DEFAULT_REGION` -> **Value**: `ap-south-1`
+    - **Name**: `AWS_ACCOUNT_ID` -> **Value**: `587082268194`
+    - **Name**: `ECR_REPO` -> **Value**: `erp-ventures`
+5.  Click **Save**.
+
+## 7. Create Pipeline Job
 
 1.  Go to **Dashboard > New Item**.
 2.  Enter a name (e.g., `frappe-docker-build`).
@@ -106,7 +119,7 @@ Jenkins needs authorization to pull from your private GitHub repos and push to A
 9.  **Script Path**: `Jenkinsfile`
 10. Click **Save**.
 
-## 7. Run the Build
+## 8. Run the Build
 
 1.  Click **Build Now** on the job page.
 2.  Monitor progress by clicking the build number (`#1`) > **Console Output**.

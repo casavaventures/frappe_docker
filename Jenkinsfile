@@ -2,9 +2,10 @@ pipeline {
     agent any
 
     environment {
-        AWS_DEFAULT_REGION = 'ap-south-1'
-        AWS_ACCOUNT_ID = '587082268194'
-        ECR_REPO = 'erp-ventures'
+        // AWS Configuration is now expected from Jenkins Global Properties
+        // AWS_DEFAULT_REGION
+        // AWS_ACCOUNT_ID
+        // ECR_REPO
         // Construct the ECR URI
         ECR_REGISTRY = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
         IMAGE_URI = "${ECR_REGISTRY}/${ECR_REPO}"
