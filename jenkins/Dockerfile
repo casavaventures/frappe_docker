@@ -1,4 +1,4 @@
-FROM jenkins/jenkins:lts-jdk17
+FROM jenkins/jenkins:lts-jdk21
 
 USER root
 
@@ -24,3 +24,12 @@ RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2
     rm -rf aws awscliv2.zip
 
 USER jenkins
+
+# Pre-install plugins to fix dependency issues (caffeine-api) and install common tools
+RUN jenkins-plugin-cli --plugins \
+    caffeine-api \
+    workflow-aggregator \
+    git \
+    docker-workflow \
+    pipeline-aws \
+    blueocean
