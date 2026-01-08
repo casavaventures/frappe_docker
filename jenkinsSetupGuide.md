@@ -80,12 +80,19 @@ You have two options for handling AWS credentials. **Option 1 (Interactive)** is
 #### Option 1: Interactive Input (Default) - Supports SSO/Temporary Creds
 **No setup required here.** The pipeline will popup a dialog during the build asking for credentials.
 
-**If you don't have permanent keys (IAM User)** and use AWS SSO or get temporary credentials:
-1.  Login to your AWS SSO/Identity Portal in your browser.
-2.  Click on the Account/Role you want to use.
-3.  Click **"Command line or programmatic access"**.
-4.  Copy the values for `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, and `AWS_SESSION_TOKEN`.
-5.  Paste them into the Jenkins popup when requested.
+**If you only have an IAM Username and Password:**
+Jenkins cannot use your password directly. You must generate Access Keys (which are like a username/password for tools).
+
+1.  **Login to AWS Console**: Use your Browser to login (as shown in your screenshot).
+2.  **Go to Security Credentials**:
+    - **Click this link**: [https://console.aws.amazon.com/iam/home?#/security_credentials](https://console.aws.amazon.com/iam/home?#/security_credentials)
+    - (Or manually: Click your username in the top-right corner > **Security credentials**).
+    - Scroll down to **Access keys**.
+    - Click **Create access key**.
+    - Select **Command Line Interface (CLI)**.
+3.  **Copy the Keys**:
+    - Copy the **Access key** and **Secret access key**.
+4.  **Paste into Jenkins**: Go back to the Jenkins popup and paste them there.
 
 #### Option 2: Stored Credentials (Automated) - Permanent Keys Only
 If you prefer fully automated builds (no manual input), follow these steps:
@@ -145,9 +152,10 @@ To keep your `Jenkinsfile` generic and secure, we will set the project-specific 
 3.  **Build**: Builds Docker image.
 4.  **Login Request**:
     - **If using Interactive Input (Default)**: The build will **PAUSE**.
-        - Hover over the stage in the UI or check the Console.
-        - Click **"Paused for Input"**.
-        - A popup will appear. Enter your AWS Access Key and Secret Key.
+        - **Important**: Go to the **Build Dashboard** (click `#1` or the build number in breadcrumbs).
+        - Look for the paused stage "Login to ECR".
+        - **Action**: You must click the text/link that says **"Input requested"** inside the stage card (bottom half of the screen).
+        - A popup will appear. Enter your AWS Access Key, Secret Key, and Session Token.
         - Click **Login**.
     - **If using Stored Credentials**: The build will automatically authenticate using the stored `aws-ecr-credentials` and proceed.
 5.  **Push**: Pushes to ECR utilizing the credentials.
