@@ -1,0 +1,46 @@
+[
+    {
+        "url": "https://github.com/casavaventures/erpnext",
+        "branch": "release"
+    },
+    {
+        "url": "https://<GITHUB_TOKEN>@github.com/casavaventures/bhm-utilities.git",
+        "branch": "release"
+    },
+    {
+        "url": "https://github.com/casavaventures/erpnext-expense-management-module.git",
+        "branch": "release"
+    },
+    {
+        "url": "https://github.com/casavaventures/hrms",
+        "branch": "release"
+    },
+    {
+        "url": "https://github.com/casavaventures/payments",
+        "branch": "release"
+    },
+    {
+        "url": "https://github.com/casavaventures/webshop",
+        "branch": "release"
+    },
+    {
+        "url": "https://<GITHUB_TOKEN>@github.com/casavaventures/shopbridge.git",
+        "branch": "release"
+    },
+    {
+        "url": "https://github.com/casavaventures/india-compliance.git",
+        "branch": "release"
+    },
+    {
+        "url": "https://github.com/casavaventures/ecommerce_integrations",
+        "branch": "release"
+    },
+    {
+        "url": "https://github.com/casavaventures/frappe_whatsapp",
+        "branch": "release"
+    },
+    {
+        "url": "https://github.com/casavaventures/insights",
+        "branch": "release"
+    }
+]
