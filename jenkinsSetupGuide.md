@@ -73,17 +73,32 @@ We run Jenkins in a Docker container that has access to the host's Docker socket
 
 Jenkins needs authorization to pull from your private GitHub repos and push to AWS ECR.
 
-### A. AWS Credentials (for ECR Push)
+### AWS Credentials
+
+You have two options for handling AWS credentials. **Option 1 (Interactive)** is enabled by default.
+
+#### Option 1: Interactive Input (Default) - Supports SSO/Temporary Creds
+**No setup required here.** The pipeline will popup a dialog during the build asking for credentials.
+
+**If you don't have permanent keys (IAM User)** and use AWS SSO or get temporary credentials:
+1.  Login to your AWS SSO/Identity Portal in your browser.
+2.  Click on the Account/Role you want to use.
+3.  Click **"Command line or programmatic access"**.
+4.  Copy the values for `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, and `AWS_SESSION_TOKEN`.
+5.  Paste them into the Jenkins popup when requested.
+
+#### Option 2: Stored Credentials (Automated) - Permanent Keys Only
+If you prefer fully automated builds (no manual input), follow these steps:
 1.  Go to **Dashboard > Manage Jenkins > Credentials > System > Global credentials (unrestricted)**.
 2.  Click **+ Add Credentials**.
-   - **Kind**: Username with password
-   - **Scope**: Global (Jenkins, nodes, items, all child items, etc)
-   - **Username**: `AWS_ACCESS_KEY_ID` (Your AWS Access Key)
-   - **Password**: `AWS_SECRET_ACCESS_KEY` (Your AWS Secret Key)
-   - **ID**: `aws-ecr-credentials` (**Crucial**: Must match this exact ID)
-3.  Click **Create**.
+3.  **Kind**: Username with password.
+4.  **Username**: `AWS_ACCESS_KEY_ID` (Your AWS Access Key).
+5.  **Password**: `AWS_SECRET_ACCESS_KEY` (Your AWS Secret Key).
+6.  **ID**: `aws-ecr-credentials` (**Crucial**: Must match this exact ID).
+7.  Click **Create**.
+*Note*: You will need to edit the `Jenkinsfile` to uncomment Option 2 and comment out Option 1.
 
-### B. GitHub Token (for Private Repos)
+### GitHub Token (for Private Repos)
 1.  Click **+ Add Credentials** again.
 2.  **Kind**: Secret text
 3.  **Scope**: Global
@@ -125,12 +140,18 @@ To keep your `Jenkinsfile` generic and secure, we will set the project-specific 
 2.  Monitor progress by clicking the build number (`#1`) > **Console Output**.
 
 ### What Happens During the Build?
-1.  **Initialize**: Sets version to `1.0.<BUILD_NUMBER>`.
-2.  **Prepare**: Reads `apps.json`, securely injects your GitHub token, and encodes it.
-3.  **Build**: Runs `docker build` using the host's Docker engine.
-4.  **Login**: Authenticates with AWS ECR using provided credentials.
-5.  **Push**: Pushes the new image to ECR with `version` and `latest` tags.
-6.  **Cleanup**: Removes local images to save space.
+1.  **Initialize**: Sets version.
+2.  **Prepare**: Prepares apps.
+3.  **Build**: Builds Docker image.
+4.  **Login Request**:
+    - **If using Interactive Input (Default)**: The build will **PAUSE**.
+        - Hover over the stage in the UI or check the Console.
+        - Click **"Paused for Input"**.
+        - A popup will appear. Enter your AWS Access Key and Secret Key.
+        - Click **Login**.
+    - **If using Stored Credentials**: The build will automatically authenticate using the stored `aws-ecr-credentials` and proceed.
+5.  **Push**: Pushes to ECR utilizing the credentials.
+6.  **Cleanup**: Removes local images.
 
 ## Troubleshooting
 

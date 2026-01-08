@@ -66,13 +66,41 @@ pipeline {
 
         stage('Login to ECR') {
             steps {
+                // --- OPTION 1: Interactive Input (Active) ---
+                script {
+                    echo "Requesting AWS Credentials via Jenkins UI..."
+                    
+                    // This will pause the pipeline and show a popup in Jenkins UI
+                    def auth = input message: 'Please Login to AWS', ok: 'Login', parameters: [
+                        string(name: 'AWS_ACCESS_KEY_ID', description: 'Enter AWS Access Key ID (Temporary or Permanent)'),
+                        password(name: 'AWS_SECRET_ACCESS_KEY', description: 'Enter AWS Secret Access Key'),
+                        password(name: 'AWS_SESSION_TOKEN', description: 'Enter AWS Session Token (Required for Temporary/SSO Creds, leave empty otherwise)')
+                    ]
+                    
+                    withEnv([
+                        "AWS_ACCESS_KEY_ID=${auth['AWS_ACCESS_KEY_ID']}", 
+                        "AWS_SECRET_ACCESS_KEY=${auth['AWS_SECRET_ACCESS_KEY']}",
+                        "AWS_SESSION_TOKEN=${auth['AWS_SESSION_TOKEN']}"
+                    ]) {
+                        echo "Authenticating with provided credentials..."
+                        sh """
+                            aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${ECR_REGISTRY}
+                        """
+                    }
+                }
+
+                // --- OPTION 2: Stored Credentials (Commented Out) ---
+                // To use this: 
+                // 1. Setup 'aws-ecr-credentials' in Jenkins > Credentials
+                // 2. Uncomment the block below and comment out Option 1
+                /*
                 echo "Logging into AWS ECR..."
-                // Requires AWS credentials with ID 'aws-ecr-credentials' in Jenkins
                 withCredentials([usernamePassword(credentialsId: 'aws-ecr-credentials', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
                     sh """
                         aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${ECR_REGISTRY}
                     """
                 }
+                */
             }
         }
 
