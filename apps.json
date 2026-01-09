@@ -4,7 +4,7 @@
         "branch": "release"
     },
     {
-        "url": "https://<GITHUB_TOKEN>@github.com/casavaventures/bhm-utililities.git",
+        "url": "https://github.com/casavaventures/bhm-utilities.git",
         "branch": "release"
     },
     {
@@ -24,7 +24,7 @@
         "branch": "release"
     },
     {
-        "url": "https://<GITHUB_TOKEN>@github.com/casavaventures/shopbridge.git",
+        "url": "https://github.com/casavaventures/shopbridge.git",
         "branch": "release"
     },
     {
