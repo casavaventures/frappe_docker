@@ -19,7 +19,7 @@ This guide explains how to replace the Jenkins CI workflow with a fully serverle
 ### 1.1 Prerequisites
 - AWS Account with `ap-south-1` (Mumbai) region active.
 - Existing ECR Repository: `erp-ventures`.
-- GitHub Repository with `apps.json` and `Dockerfile`.
+- GitHub Repository with `apps.json` and `Dockerfile` (or `Containerfile`).
 - `buildspec.yml` added to your repository root (see Step 2).
 
 ### 1.2 Store GitHub Configs
