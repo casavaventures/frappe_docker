@@ -7,8 +7,8 @@ env:
     # ECR_REPO: "erp-ventures"
     FRAPPE_BRANCH: "version-15"
     FRAPPE_PATH: "https://github.com/casavaventures/frappe"
-  # secrets-manager:
-    # GITHUB_TOKEN: frappe-docker-github-token:token
+  parameter-store:
+    GITHUB_TOKEN: "/frappe-docker/github-token"
 
 phases:
   pre_build:
@@ -19,7 +19,10 @@ phases:
       - |
         if [ -f apps.json ]; then
             echo "Processing apps.json..."
-            export APPS_JSON_BASE64=$(base64 -w 0 apps.json)
+            # Replace placeholder with actual token from env
+            sed "s/<GITHUB_TOKEN>/$GITHUB_TOKEN/g" apps.json > apps_processed.json
+            export APPS_JSON_BASE64=$(base64 -w 0 apps_processed.json)
+            rm apps_processed.json
         else
             echo "Error: apps.json not found"
             exit 1
