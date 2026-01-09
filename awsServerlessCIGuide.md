@@ -28,6 +28,16 @@ This guide explains how to replace the Jenkins CI workflow with a fully serverle
 - GitHub Repository with `apps.json` and `Dockerfile` (or `Containerfile`).
 - `buildspec.yml` added to your repository root (see Step 2).
 
+### 1.2 Store GitHub Configs
+Since we are moving away from Jenkins, we need a secure place to store the GitHub Token used for cloning your private apps (Shopbridge, etc) inside the Docker build.
+
+1.  Go to **AWS Systems Manager** > **Parameter Store**.
+2.  Click **Create parameter**.
+    *   **Name**: `/frappe-docker/github-token`
+    *   **Type**: `SecureString`
+    *   **Value**: Your GitHub Personal Access Token (PAT).
+3.  Click **Create parameter**.
+
 ---
 
 ## 2. Commit `buildspec.yml`
@@ -35,7 +45,8 @@ This guide explains how to replace the Jenkins CI workflow with a fully serverle
 Ensure the `buildspec.yml` file is present in the root of your repository. This file tells AWS CodeBuild what to do (similar to `Jenkinsfile`).
 
 **Key sections in `buildspec.yml`:**
-- **Pre-build**: Logins to ECR, encodes `apps.json`.
+- **Secrets Manager/Parameter Store**: Fetches `/frappe-docker/github-token` securely.
+- **Pre-build**: Logins to ECR, encodes `apps.json` with the token.
 - **Build**: Runs `docker build`.
 - **Post-build**: Pushes images to ECR.
 
