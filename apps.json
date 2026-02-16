@@ -40,6 +40,10 @@
         "branch": "release"
     },
     {
+        "url": "https://github.com/casavaventures/print_designer",
+        "branch": "release"
+    },
+    {
         "url": "https://github.com/casavaventures/insights",
         "branch": "release"
     }
