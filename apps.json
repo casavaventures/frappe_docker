@@ -40,6 +40,10 @@
         "branch": "release"
     },
     {
+        "url": "https://github.com/casavaventures/frappe_whatsapp_chatbot",
+        "branch": "release"
+    },
+    {
         "url": "https://github.com/casavaventures/print_designer",
         "branch": "release"
     },
